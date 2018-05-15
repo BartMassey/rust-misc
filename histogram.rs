@@ -5,6 +5,7 @@
 
 use std::collections::HashMap;
 use std::hash::Hash;
+use std::iter::FromIterator;
 
 struct Histogram<T: Hash + Eq>(HashMap<T, usize>);
 
@@ -24,11 +25,19 @@ impl<T: Hash + Eq> Histogram<T> {
 
 }
 
+impl<T: Hash + Eq> FromIterator<T> for Histogram<T> {
+    fn from_iter<I>(iter: I) -> Self
+        where I: IntoIterator<Item=T>
+    {
+        Histogram::histogram(iter)
+    }
+}
+
 fn main() {
     let alphas = "hello world"
         .chars()
         .filter(|c| c.is_alphabetic());
-    let Histogram(h) = Histogram::histogram(alphas);
+    let Histogram(h) = alphas.collect();
     let mut keys: Vec<&char> = h.keys().collect();
     keys.sort();
     for key in keys {
