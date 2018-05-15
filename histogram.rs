@@ -6,23 +6,29 @@
 use std::collections::HashMap;
 use std::hash::Hash;
 
-fn histogram<I, T>(values: I) -> HashMap<T, usize>
-    where I: IntoIterator<Item=T>, T: Hash + Eq
-{
-    let mut h = HashMap::new();
-    for k in values {
-        h.entry(k)
-            .and_modify(|e| *e += 1)
-            .or_insert(1);
+struct Histogram<T: Hash + Eq>(HashMap<T, usize>);
+
+impl<T: Hash + Eq> Histogram<T> {
+
+    fn histogram<I>(values: I) -> Self
+        where I: IntoIterator<Item=T>
+    {
+        let mut h = HashMap::new();
+        for k in values {
+            h.entry(k)
+                .and_modify(|e| *e += 1)
+                .or_insert(1);
+        }
+        Histogram(h)
     }
-    h
+
 }
 
 fn main() {
     let alphas = "hello world"
         .chars()
         .filter(|c| c.is_alphabetic());
-    let h = histogram(alphas);
+    let Histogram(h) = Histogram::histogram(alphas);
     let mut keys: Vec<&char> = h.keys().collect();
     keys.sort();
     for key in keys {
