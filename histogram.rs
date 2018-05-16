@@ -7,6 +7,8 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter::FromIterator;
 use std::fmt;
+use std::fs::File;
+use std::io::Read;
 
 #[derive(Clone, Debug)]
 struct Histogram<T: Hash + Eq>(HashMap<T, usize>);
@@ -77,8 +79,19 @@ fn main() {
         .collect();
     println!("{}", h);
 
-    let words: Histogram<_> = "a banana is a banana is a banana"
+    let words: Histogram<&str> = "a banana is a banana is a banana"
         .split_whitespace()
         .collect();
     println!("{}", words);
+    
+    let mut gba = String::new();
+    File::open("gettysburg-address.txt")
+        .expect("file not found")
+        .read_to_string(&mut gba)
+        .expect("file read error");
+    let gba = clean_chars(&gba);
+    let gba: Histogram<&str> = gba
+        .split_whitespace()
+        .collect();
+    println!("{}", gba);
 }
