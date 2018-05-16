@@ -27,6 +27,18 @@ impl<T: Hash + Eq> Histogram<T> {
 
 }
 
+impl<T: Hash + Eq + Ord> Histogram<T> {
+    fn graph<'a>(&'a self) -> Vec<(&'a T, usize)>  {
+        let Histogram(h) = self;
+        let mut result: Vec<(&T, usize)> = h
+            .iter()
+            .map(|(k, v)| (k, *v))
+            .collect();
+        result.sort();
+        result
+    }
+}
+
 impl<T: Hash + Eq> FromIterator<T> for Histogram<T> {
     fn from_iter<I>(iter: I) -> Self
         where I: IntoIterator<Item=T>
@@ -39,17 +51,23 @@ impl<T> fmt::Display for Histogram<T>
     where T: Hash + Eq + Ord + fmt::Debug
 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        if self.0.is_empty() {
-            return write!(fmt, "Histogram {{}}");
+        for (key, count) in self.graph() {
+            writeln!(fmt, "{:?}: {}", key, count)?;
         }
-        let mut keys: Vec<&T> = self.0.keys().collect();
-        let mut items = Vec::new();
-        keys.sort();
-        for key in keys {
-            items.push(format!("{:?}: {}", key, self.0[key]));
-        }
-        write!(fmt, "Histogram {{{}}}", items.join(", "))
+        Ok(())
     }
+}
+
+fn clean_chars(s: &str) -> String {
+    let mut result = String::new();
+    for c in s.chars() {
+        if c.is_alphabetic() || c.is_numeric() || c.is_whitespace() {
+            result.extend(c.to_lowercase());
+        } else {
+            result.push(' ');
+        }
+    }
+    result
 }
 
 fn main() {
