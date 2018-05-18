@@ -58,13 +58,17 @@ impl PartialEq<u32> for Card {
 
 impl PartialEq<Card> for u32 {
     fn eq(&self, other: &Card) -> bool {
-        *self == other.rank.value()
+        *other == *self
     }
 }
 
 fn main() {
     let jc = Card{ rank: Jack, suit: Clubs };
+    let tc = Card{ rank: Num(10), suit: Clubs };
     println!("{:?}", jc == jc);
+    println!("{:?}", jc == tc);
     println!("{:?}", jc == 11);
+    println!("{:?}", tc == 11);
     println!("{:?}", 11 == jc);
+    println!("{:?}", 11 == tc);
 }
