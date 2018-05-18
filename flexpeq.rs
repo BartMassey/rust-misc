@@ -7,7 +7,7 @@
 
 #![allow(unused)]
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Suit {
     Hearts,
     Diamonds,
@@ -16,7 +16,7 @@ enum Suit {
 }
 use Suit::*;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Rank {
     Num(u32),
     Jack,
@@ -38,7 +38,7 @@ impl Rank {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Eq)]
 struct Card {
     rank: Rank,
     suit: Suit,
