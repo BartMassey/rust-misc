@@ -62,13 +62,23 @@ impl PartialEq<Card> for u32 {
     }
 }
 
-fn main() {
+fn compare_test() {
     let jc = Card{ rank: Jack, suit: Clubs };
-    let tc = Card{ rank: Num(10), suit: Clubs };
-    println!("{:?}", jc == jc);
-    println!("{:?}", jc == tc);
-    println!("{:?}", jc == 11);
-    println!("{:?}", tc == 11);
-    println!("{:?}", 11 == jc);
-    println!("{:?}", 11 == tc);
+    let jh = Card{ rank: Jack, suit: Hearts };
+    let th = Card{ rank: Num(10), suit: Hearts };
+    assert_eq!(jc, jc);
+    assert_eq!(jc, jh);
+    assert_eq!(jc, 11);
+    assert_ne!(th, 11);
+    assert_eq!(11, jc);
+    assert_ne!(11, th);
+}
+
+#[test]
+fn call_compare_test() {
+    compare_test();
+}
+
+fn main() {
+    compare_test();
 }
