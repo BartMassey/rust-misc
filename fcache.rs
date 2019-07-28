@@ -16,7 +16,7 @@ impl<T: Hash + Eq + Clone, U: Clone> Memo<T, U> {
         Memo(HashMap::new())
     }
 
-    fn eval(&mut self, f: &Fn(&mut Memo<T, U>, T)->U, t: T) -> U {
+    fn eval(&mut self, f: & dyn Fn(&mut Memo<T, U>, T)->U, t: T) -> U {
         if let Some(u) = self.0.get(&t) {
             return u.clone();
         }
