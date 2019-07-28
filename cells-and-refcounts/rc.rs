@@ -27,16 +27,30 @@ impl Counter {
 
 }
 
-/// Increment the given counter. Note that this function
-/// takes `counter` by immutable reference.
-fn update_counter(counter: &Counter) {
-    counter.incr();
+/// Message to print plus usage counter.
+struct Message {
+    message: &'static str,
+    counter: Counter,
+}
+
+impl Message {
+    fn new(message: &'static str, counter: Counter) -> Message
+    {
+        Message { message, counter }
+    }
+
+    fn print(&self) {
+        println!("{} {}", self.message, self.counter.value());
+        self.counter.incr();
+    }
 }
 
 fn main() {
-    let counter1 = Counter::default();
-    let counter2 = counter1.clone();
-    println!("{}", counter1.value());
-    update_counter(&counter2);
-    println!("{}", counter1.value());
+    let counter = Counter::default();
+    let m1 = Message::new("m1", counter.clone());
+    let m2 = Message::new("m2", counter);
+    m1.print();
+    m2.print();
+    m1.print();
+    m2.print();
 }
