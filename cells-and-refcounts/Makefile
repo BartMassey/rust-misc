@@ -1,4 +1,4 @@
-PROGS = cell plaincount refcell rc
+PROGS = cell plaincount refcell rc rccycles
 
 RUSTFLAGS = -g
 
@@ -15,6 +15,9 @@ refcell: refcell.rs
 
 rc: rc.rs
 	rustc $(RUSTFLAGS) -o rc rc.rs
+
+rccycles: rccycles.rs
+	rustc $(RUSTFLAGS) -o rccycles rccycles.rs
 
 clean:
 	-rm -f $(PROGS)
