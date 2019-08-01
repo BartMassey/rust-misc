@@ -1,9 +1,8 @@
 use std::collections::LinkedList;
 
-trait Stack<T> {
+pub trait Stack<T> {
     fn spush(&mut self, v: T);
     fn spop(&mut self) -> Option<T>;
-    fn sis_empty(&self) -> bool;
 }
 
 impl<'a, T: ?Sized> Stack<&'a T> for Vec<&'a T> {
@@ -13,10 +12,6 @@ impl<'a, T: ?Sized> Stack<&'a T> for Vec<&'a T> {
 
     fn spop(&mut self) -> Option<&'a T> {
         self.pop()
-    }
-    
-    fn sis_empty(&self) -> bool {
-        self.is_empty()
     }
 }
 
@@ -28,29 +23,31 @@ impl<'a, T: ?Sized> Stack<&'a T> for LinkedList<&'a T> {
     fn spop(&mut self) -> Option<&'a T> {
         self.pop_front()
     }
-    
-    fn sis_empty(&self) -> bool {
-        self.is_empty()
-    }
 }
 
-fn dup<'a, S, T>(stack: &mut S)
-    where S: Stack<&'a T>, T: 'a + ?Sized
+pub fn dup<'a, 'b: 'a, S, T>(stack: &mut S)
+    where S: Stack<&'b T> + 'a, T: 'b + ?Sized
 {
     let v = stack.spop().unwrap();
     stack.spush(v);
     stack.spush(v);
 }
 
-fn test<S>(mut s: S) where S: Stack<&'static str> {
-    s.spush("hello");
-    dup(&mut s);
-    assert_eq!(s.spop().unwrap(), "hello");
-    assert_eq!(s.spop().unwrap(), "hello");
-    assert!(s.sis_empty());    
-}
+#[cfg(test)]
+mod test {
+    use crate::*;
 
-fn main() {
-    test(Vec::new());
-    test(LinkedList::new());
+    fn test<S>(mut s: S) where S: Stack<&'static str> {
+        s.spush("hello");
+        dup(&mut s);
+        assert_eq!(s.spop().unwrap(), "hello");
+        assert_eq!(s.spop().unwrap(), "hello");
+        assert_eq!(s.spop(), None);
+    }
+
+    #[test]
+    fn test_impls() {
+        test(Vec::new());
+        test(LinkedList::new());
+    }
 }
