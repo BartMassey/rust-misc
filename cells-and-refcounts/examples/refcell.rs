@@ -1,6 +1,5 @@
 // https://doc.rust-lang.org/std/cell/
-mod count;
-use count::Count;
+use cell_rc::count::Count;
 
 use std::cell::RefCell;
 

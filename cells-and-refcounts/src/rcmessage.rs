@@ -1,7 +1,7 @@
-pub use crate::count::Count;
+use crate::count::Count;
 
-pub use std::cell::RefCell;
-pub use std::rc::Rc;
+use std::cell::RefCell;
+use std::rc::Rc;
 
 /// An interior-mutable shared counter over the restricted `Count`.
 #[derive(Default, Clone)]
@@ -46,7 +46,6 @@ impl Message {
     }
 
     /// Add a newline.
-    #[allow(unused)]
     pub fn println(&self) {
         self.print();
         println!();
