@@ -4,38 +4,33 @@
 // distribution of this software for license terms.
 
 use std::collections::HashMap;
-use std::hash::Hash;
-use std::iter::FromIterator;
 use std::fmt;
 use std::fs::File;
+use std::hash::Hash;
 use std::io::Read;
+use std::iter::FromIterator;
 
 #[derive(Clone, Debug)]
 struct Histogram<T: Hash + Eq>(HashMap<T, usize>);
 
 impl<T: Hash + Eq> Histogram<T> {
-
     fn histogram<I>(values: I) -> Self
-        where I: IntoIterator<Item=T>
+    where
+        I: IntoIterator<Item = T>,
     {
         let mut h = HashMap::new();
         for k in values {
-            h.entry(k)
-                .and_modify(|e| *e += 1)
-                .or_insert(1);
+            h.entry(k).and_modify(|e| *e += 1).or_insert(1);
         }
         Histogram(h)
     }
-
 }
 
 impl<T: Hash + Eq + Ord> Histogram<T> {
-    fn graph<'a>(&'a self) -> Vec<(&'a T, usize)>  {
+    fn graph<'a>(&'a self) -> Vec<(&'a T, usize)> {
         let Histogram(h) = self;
-        let mut result: Vec<(&T, usize)> = h
-            .iter()
-            .map(|(k, v)| (k, *v))
-            .collect();
+        let mut result: Vec<(&T, usize)> =
+            h.iter().map(|(k, v)| (k, *v)).collect();
         result.sort();
         result
     }
@@ -43,14 +38,16 @@ impl<T: Hash + Eq + Ord> Histogram<T> {
 
 impl<T: Hash + Eq> FromIterator<T> for Histogram<T> {
     fn from_iter<I>(iter: I) -> Self
-        where I: IntoIterator<Item=T>
+    where
+        I: IntoIterator<Item = T>,
     {
         Histogram::histogram(iter)
     }
 }
 
 impl<T> fmt::Display for Histogram<T>
-    where T: Hash + Eq + Ord + fmt::Debug
+where
+    T: Hash + Eq + Ord + fmt::Debug,
 {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         for (key, count) in self.graph() {
@@ -83,15 +80,13 @@ fn main() {
         .split_whitespace()
         .collect();
     println!("{}", words);
-    
+
     let mut gba = String::new();
     File::open("gettysburg-address.txt")
         .expect("file not found")
         .read_to_string(&mut gba)
         .expect("file read error");
     let gba = clean_chars(&gba);
-    let gba: Histogram<&str> = gba
-        .split_whitespace()
-        .collect();
+    let gba: Histogram<&str> = gba.split_whitespace().collect();
     println!("{}", gba);
 }
